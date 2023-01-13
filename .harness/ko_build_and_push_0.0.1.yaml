@@ -1,0 +1,28 @@
+template:
+  name: ko build and push
+  type: Step
+  spec:
+    type: Run
+    spec:
+      connectorRef: account.DockerHub
+      image: kameshsampath/kube-dev-tools:0.1.5
+      shell: Bash
+      command: |-
+        echo "$IMAGE_REGISTRY_PASSWORD" | ko login "$IMAGE_REGISTRY" -u  "$IMAGE_REGISTRY_USERNAME" --password-stdin
+        export KO_DOCKER_REPO="$IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$IMAGE_REPO"
+        ko build --bare \
+          --image-label="org.opencontainers.image.source=<+trigger.repoUrl>" \
+          --tags=latest \
+          --tags="$IMAGE_TAG" \
+          --platform=linux/amd64 \
+          --platform=linux/arm64
+      envVariables:
+        IMAGE_REPO: gitops-greeter
+        IMAGE_TAG: <+input>
+        IMAGE_REGISTRY_USERNAME: <+pipeline.stages.Build.variables.image_registry_username>
+        IMAGE_REGISTRY_PASSWORD: <+pipeline.stages.Build.variables.github_pat>
+        IMAGE_REGISTRY: <+pipeline.stages.Build.variables.image_registry>
+      imagePullPolicy: IfNotPresent
+  identifier: ko_build_and_push
+  description: Builds a go application using ko and pushes the image to repo KO_DOCKER_REPO
+  versionLabel: 0.0.1
