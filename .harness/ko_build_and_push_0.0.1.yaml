@@ -4,7 +4,7 @@ template:
   spec:
     type: Run
     spec:
-      connectorRef: account.DockerHub
+      connectorRef: <+input>
       image: kameshsampath/kube-dev-tools:0.1.5
       shell: Bash
       command: |-
@@ -17,11 +17,12 @@ template:
           --platform=linux/amd64 \
           --platform=linux/arm64
       envVariables:
-        IMAGE_REPO: gitops-greeter
+        IMAGE_REPO: <+input>
         IMAGE_TAG: <+input>
-        IMAGE_REGISTRY_USERNAME: <+pipeline.stages.Build.variables.image_registry_username>
-        IMAGE_REGISTRY_PASSWORD: <+pipeline.stages.Build.variables.github_pat>
-        IMAGE_REGISTRY: <+pipeline.stages.Build.variables.image_registry>
+        KO_DOCKER_REPO: <+input>
+        IMAGE_REGISTRY: <+input>
+        IMAGE_REGISTRY_USERNAME: <+input>
+        IMAGE_REGISTRY_PASSWORD: <+input>
       imagePullPolicy: IfNotPresent
   identifier: ko_build_and_push
   description: Builds a go application using ko and pushes the image to repo KO_DOCKER_REPO
