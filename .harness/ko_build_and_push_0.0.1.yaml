@@ -9,7 +9,6 @@ template:
       shell: Bash
       command: |-
         echo "$IMAGE_REGISTRY_PASSWORD" | ko login "$IMAGE_REGISTRY" -u  "$IMAGE_REGISTRY_USERNAME" --password-stdin
-        export KO_DOCKER_REPO="$IMAGE_REGISTRY/$IMAGE_REGISTRY_USERNAME/$IMAGE_REPO"
         image_digests=$(ko build --bare \
           --image-label="org.opencontainers.image.source=<+trigger.repoUrl>" \
           --tags=latest \
@@ -17,7 +16,6 @@ template:
           --platform=linux/amd64 \
           --platform=linux/arm64)
       envVariables:
-        IMAGE_REPO: <+input>
         IMAGE_TAG: <+input>
         KO_DOCKER_REPO: <+input>
         IMAGE_REGISTRY: <+input>
