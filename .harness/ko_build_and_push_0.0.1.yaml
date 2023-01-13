@@ -10,7 +10,7 @@ template:
       command: |-
         echo "$IMAGE_REGISTRY_PASSWORD" | ko login "$IMAGE_REGISTRY" -u  "$IMAGE_REGISTRY_USERNAME" --password-stdin
         image_digests=$(ko build --bare \
-          --image-label="org.opencontainers.image.source=<+trigger.repoUrl>" \
+          --image-label="org.opencontainers.image.source=<+codebase.repoUrl>" \
           --tags="$IMAGE_TAG" \
           --platform=linux/amd64 \
           --platform=linux/arm64)
